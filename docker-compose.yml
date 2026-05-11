@@ -1,0 +1,10 @@
+services:
+  bot-admin-frontend:
+    build: .
+    container_name: britam_bot_admin_frontend
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api
+      - VITE_BOT_SECRET=dev-bot-secret
+      - VITE_USE_MOCKS=true

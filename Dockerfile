@@ -2,11 +2,15 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+ENV NODE_ENV=development
+
+COPY package.json ./
 
 RUN npm config set fund false \
     && npm config set audit false \
-    && npm install --legacy-peer-deps --no-audit --no-fund
+    && npm install --include=dev --legacy-peer-deps --no-audit --no-fund \
+    && ls -la node_modules/.bin \
+    && test -f node_modules/.bin/vite
 
 COPY . .
 

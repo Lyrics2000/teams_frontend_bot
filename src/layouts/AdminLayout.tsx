@@ -1,5 +1,8 @@
-import { NavLink, Outlet } from 'react-router-dom';
-import { Activity, BarChart3, Bot, ClipboardCheck, FileText, Gauge, LayoutDashboard, MessageSquareText, Settings, ShieldCheck, UsersRound } from 'lucide-react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { ToastStack } from '../components/ToastStack';
+import { Activity, BarChart3, Bot, ClipboardCheck, FileText, Gauge, LayoutDashboard, LogOut, MessageSquareText, Settings, ShieldCheck, UsersRound } from 'lucide-react';
+
+import { getStoredAdminUser, logoutAdmin, USE_MOCKS } from '../services/api';
 
 const navItems = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -15,6 +18,10 @@ const navItems = [
 ];
 
 export function AdminLayout() {
+  const navigate = useNavigate();
+  const adminUser = getStoredAdminUser();
+  const logout = () => { logoutAdmin(); window.location.href = '/'; };
+
   return (
     <div className="admin-shell">
       <aside className="sidebar">
@@ -34,12 +41,14 @@ export function AdminLayout() {
           ))}
         </nav>
         <div className="sidebar-card">
-          <strong>Mock data mode</strong>
-          <p>Dashboards are using dummy data. Flip VITE_USE_MOCKS=false later to consume Django APIs.</p>
+          <strong>{USE_MOCKS ? 'Mock data mode' : 'Live API mode'}</strong>
+          <p>{USE_MOCKS ? 'Dashboards are using dummy data.' : `Signed in as ${adminUser?.username || 'admin'}. Changes are saved to Django.`}</p>
+          <button className="logout-btn" onClick={logout}><LogOut size={15} /> Logout</button>
         </div>
       </aside>
       <main className="main-content">
         <Outlet />
+        <ToastStack />
       </main>
     </div>
   );

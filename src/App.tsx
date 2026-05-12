@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { AdminLayout } from './layouts/AdminLayout';
 import { Dashboard } from './pages/Dashboard';
@@ -10,8 +11,16 @@ import { Analytics } from './pages/Analytics';
 import { Reports } from './pages/Reports';
 import { SettingsPage } from './pages/SettingsPage';
 import { ActiveUsage } from './pages/ActiveUsage';
+import { LoginPage } from './pages/LoginPage';
+import { isAuthenticated } from './services/api';
 
 export default function App() {
+  const [authenticated, setAuthenticated] = useState(isAuthenticated());
+
+  if (!authenticated) {
+    return <LoginPage onLogin={() => setAuthenticated(true)} />;
+  }
+
   return (
     <Routes>
       <Route element={<AdminLayout />}>

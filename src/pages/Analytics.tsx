@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { BarChart3, CalendarDays, MessagesSquare, SearchCheck } from 'lucide-react';
 import { ChartCard } from '../components/ChartCard';
@@ -7,13 +8,15 @@ import { MetricCard } from '../components/MetricCard';
 import { PageHeader } from '../components/PageHeader';
 import { SearchBox } from '../components/SearchBox';
 import { TimeRangeFilter } from '../components/TimeRangeFilter';
-import { getOverview } from '../data/mockData';
+import { useAdminData } from '../state/AdminDataContext';
 import type { TimeRange } from '../types/domain';
 
 export function Analytics() {
   const [range, setRange] = useState<TimeRange>('30d');
-  const [categoryFilter, setCategoryFilter] = useState('');
-  const overview = useMemo(() => getOverview(range), [range]);
+  const [searchParams] = useSearchParams();
+  const [categoryFilter, setCategoryFilter] = useState(searchParams.get('category') ?? '');
+  const { overviewForRange } = useAdminData();
+  const overview = useMemo(() => overviewForRange(range), [overviewForRange, range]);
   const totalSearches = overview.categoryVolumes.reduce((sum, item) => sum + item.messages, 0);
   const filteredReports = overview.dailyCategoryReports.filter((report) => report.category.toLowerCase().includes(categoryFilter.toLowerCase()));
 

@@ -4,10 +4,11 @@ import { DataTable } from '../components/DataTable';
 import { MetricCard } from '../components/MetricCard';
 import { PageHeader } from '../components/PageHeader';
 import { StatusBadge } from '../components/StatusBadge';
-import { conversations, messages } from '../data/mockData';
+import { useAdminData } from '../state/AdminDataContext';
 import { secondsFromMs, timeAgo } from '../utils/format';
 
 export function Conversations() {
+  const { conversations, messages } = useAdminData();
   const incoming = messages.filter((message) => message.direction === 'incoming');
   const failed = messages.filter((message) => message.successful === false);
   return (

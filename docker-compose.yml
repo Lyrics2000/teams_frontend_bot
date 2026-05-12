@@ -1,15 +1,19 @@
+
 networks:
   app-network:
     external: true
 services:
   bot-admin-frontend:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: britam_bot_admin_frontend
     ports:
       - "5173:5173"
     networks:
       - app-network
     environment:
-      - VITE_API_BASE_URL=http://localhost:8000/api
-      - VITE_BOT_SECRET=dev-bot-secret
-      - VITE_USE_MOCKS=true
+      - NODE_ENV=development
+      - VITE_API_BASE_URL=http://web:8365/api
+      - VITE_USE_MOCKS=false
+    restart: unless-stopped

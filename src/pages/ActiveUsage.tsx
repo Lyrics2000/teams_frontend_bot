@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { Activity, Clock, MessageSquareText, Search, UsersRound } from 'lucide-react';
+import { MessageSquareText, UsersRound } from 'lucide-react';
 import { ActiveUserPill } from '../components/ActiveUserPill';
 import { ChartCard } from '../components/ChartCard';
 import { DataTable } from '../components/DataTable';
@@ -8,14 +8,15 @@ import { MetricCard } from '../components/MetricCard';
 import { PageHeader } from '../components/PageHeader';
 import { SearchBox } from '../components/SearchBox';
 import { TimeRangeFilter } from '../components/TimeRangeFilter';
-import { conversations, getOverview, messages } from '../data/mockData';
+import { useAdminData } from '../state/AdminDataContext';
 import type { TimeRange } from '../types/domain';
-import { secondsFromMs, timeAgo } from '../utils/format';
+import { timeAgo } from '../utils/format';
 
 export function ActiveUsage() {
   const [range, setRange] = useState<TimeRange>('30d');
   const [query, setQuery] = useState('');
-  const overview = useMemo(() => getOverview(range), [range]);
+  const { conversations, messages, overviewForRange } = useAdminData();
+  const overview = useMemo(() => overviewForRange(range), [overviewForRange, range]);
 
   const filteredUsers = overview.activeUsers.filter((user) =>
     `${user.userName} ${user.email} ${user.topCategory}`.toLowerCase().includes(query.toLowerCase())

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Activity, AlertTriangle, Bot, CheckCircle2, MessageSquareText, ShieldCheck, UsersRound } from 'lucide-react';
 import { ChartCard } from '../components/ChartCard';
@@ -6,13 +7,15 @@ import { MetricCard } from '../components/MetricCard';
 import { PageHeader } from '../components/PageHeader';
 import { StatusBadge } from '../components/StatusBadge';
 import { TimeRangeFilter } from '../components/TimeRangeFilter';
-import { getOverview } from '../data/mockData';
+import { useAdminData } from '../state/AdminDataContext';
 import type { TimeRange } from '../types/domain';
 import { timeAgo } from '../utils/format';
 
 export function Dashboard() {
   const [range, setRange] = useState<TimeRange>('30d');
-  const overview = useMemo(() => getOverview(range), [range]);
+  const navigate = useNavigate();
+  const { overviewForRange } = useAdminData();
+  const overview = useMemo(() => overviewForRange(range), [overviewForRange, range]);
 
   const topCategory = [...overview.categoryVolumes].sort((a, b) => b.messages - a.messages)[0];
   const activeNow = overview.activeUsers.filter((user) => user.activeNow).length;
@@ -26,10 +29,10 @@ export function Dashboard() {
       />
 
       <div className="insight-strip">
-        <div><Activity size={18} /><span>{activeNow} users active now</span></div>
-        <div><MessageSquareText size={18} /><span>{topCategory.name} is the most asked category</span></div>
-        <div><Bot size={18} /><span>{overview.agents.filter((a) => a.status === 'healthy').length}/{overview.agents.length} agents healthy</span></div>
-        <div><ShieldCheck size={18} /><span>{overview.pendingUsers.length} approvals waiting</span></div>
+        <button onClick={() => navigate('/activity')}><Activity size={18} /><span>{activeNow} users active now</span></button>
+        <button onClick={() => navigate('/analytics')}><MessageSquareText size={18} /><span>{topCategory.name} is the most asked category</span></button>
+        <button onClick={() => navigate('/agents')}><Bot size={18} /><span>{overview.agents.filter((a) => a.status === 'healthy').length}/{overview.agents.length} agents healthy</span></button>
+        <button onClick={() => navigate('/approvals')}><ShieldCheck size={18} /><span>{overview.pendingUsers.length} approvals waiting</span></button>
       </div>
 
       <div className="metric-grid wide">
@@ -69,13 +72,13 @@ export function Dashboard() {
           <div className="panel-title"><UsersRound size={18} /> Most active users</div>
           <div className="stack-list">
             {overview.activeUsers.slice(0, 5).map((user) => (
-              <div className="list-row" key={user.userId}>
+              <button className="list-row button-row" key={user.userId} onClick={() => navigate(`/users?user=${user.userId}`)}>
                 <div>
                   <strong>{user.userName}</strong>
                   <span>{user.topCategory} • {timeAgo(user.lastSeenAt)}</span>
                 </div>
                 <b>{user.messages}</b>
-              </div>
+              </button>
             ))}
           </div>
         </section>
@@ -84,13 +87,13 @@ export function Dashboard() {
           <div className="panel-title"><AlertTriangle size={18} /> Categories needing attention</div>
           <div className="stack-list">
             {overview.categoryVolumes.sort((a, b) => b.errors - a.errors).slice(0, 5).map((category) => (
-              <div className="list-row" key={category.name}>
+              <button className="list-row button-row" key={category.name} onClick={() => navigate(`/analytics?category=${encodeURIComponent(category.name)}`)}>
                 <div>
                   <strong>{category.name}</strong>
                   <span>{category.errors} failed checks • {category.successRate}% success</span>
                 </div>
                 <StatusBadge value={category.errors > 5 ? 'warning' : 'healthy'} />
-              </div>
+              </button>
             ))}
           </div>
         </section>
@@ -99,13 +102,13 @@ export function Dashboard() {
           <div className="panel-title"><CheckCircle2 size={18} /> Agent health</div>
           <div className="stack-list">
             {overview.agents.map((agent) => (
-              <div className="list-row" key={agent.id}>
+              <button className="list-row button-row" key={agent.id} onClick={() => navigate('/agents')}>
                 <div>
                   <strong>{agent.name}</strong>
                   <span>{agent.requestsToday} requests today • {agent.avgLatencyMs}ms avg</span>
                 </div>
                 <StatusBadge value={agent.status} />
-              </div>
+              </button>
             ))}
           </div>
         </section>

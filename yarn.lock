@@ -219,6 +219,11 @@
   resolved "https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.60.3.tgz"
   integrity sha512-DAZDBHQfG2oQuhY7mc6I3/qB4LU2fQCjRvxbDwd/Jdvb9fypP4IJ4qmtu6lNjes6B531AI8cg1aKC2di97bUxA==
 
+"@rollup/rollup-linux-x64-musl@4.60.3":
+  version "4.60.3"
+  resolved "https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/@rollup/rollup-linux-x64-musl/-/rollup-linux-x64-musl-4.60.3.tgz"
+  integrity sha512-cRxsE8c13mZOh3vP+wLDxpQBRrOHDIGOWyDL93Sy0Ga8y515fBcC2pjUfFwUe5T7tqvTvWbCpg1URM/AXdWIXA==
+
 "@tailwindcss/node@4.3.0":
   version "4.3.0"
   resolved "https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/@tailwindcss/node/-/node-4.3.0.tgz"
@@ -236,6 +241,11 @@
   version "4.3.0"
   resolved "https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/@tailwindcss/oxide-linux-x64-gnu/-/oxide-linux-x64-gnu-4.3.0.tgz"
   integrity sha512-DRNdQRpSGzRGfARVuVkxvM8Q12nh19l4BF/G7zGA1oe+9wcC6saFBHTISrpIcKzhiXtSrlSrluCfvMuledoCTQ==
+
+"@tailwindcss/oxide-linux-x64-musl@4.3.0":
+  version "4.3.0"
+  resolved "https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/@tailwindcss/oxide-linux-x64-musl/-/oxide-linux-x64-musl-4.3.0.tgz"
+  integrity sha512-Z0IADbDo8bh6I7h2IQMx601AdXBLfFpEdUotft86evd/8ZPflZe9COPO8Q1vw+pfLWIUo9zN/JGZvwuAJqduqg==
 
 "@tailwindcss/oxide@4.3.0":
   version "4.3.0"
@@ -770,6 +780,11 @@ lightningcss-linux-x64-gnu@1.32.0:
   version "1.32.0"
   resolved "https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/lightningcss-linux-x64-gnu/-/lightningcss-linux-x64-gnu-1.32.0.tgz"
   integrity sha512-V7Qr52IhZmdKPVr+Vtw8o+WLsQJYCTd8loIfpDaMRWGUZfBOYEJeyJIkqGIDMZPwPx24pUMfwSxxI8phr/MbOA==
+
+lightningcss-linux-x64-musl@1.32.0:
+  version "1.32.0"
+  resolved "https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/lightningcss-linux-x64-musl/-/lightningcss-linux-x64-musl-1.32.0.tgz"
+  integrity sha512-bYcLp+Vb0awsiXg/80uCRezCYHNg1/l3mt0gzHnWV9XP1W5sKa5/TCdGWaR/zBM2PeF/HbsQv/j2URNOiVuxWg==
 
 lightningcss@1.32.0:
   version "1.32.0"

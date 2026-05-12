@@ -7,7 +7,7 @@ export function SettingsPage() {
   const { resetDemoData } = useAdminData();
   const [saved, setSaved] = useState(false);
   const [form, setForm] = useState({
-    apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+    apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://10.10.4.64:8000/api',
     botSecret: import.meta.env.VITE_BOT_SECRET || 'dev-bot-secret',
     useMocks: String(import.meta.env.VITE_USE_MOCKS ?? 'true'),
     refreshInterval: '60',

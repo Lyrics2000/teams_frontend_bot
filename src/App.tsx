@@ -13,6 +13,36 @@ import { SettingsPage } from './pages/SettingsPage';
 import { ActiveUsage } from './pages/ActiveUsage';
 import { LoginPage } from './pages/LoginPage';
 import { isAuthenticated } from './services/api';
+import { AdminDataProvider, useAdminData } from './state/AdminDataContext';
+
+function AdminRoutes() {
+  const { loading } = useAdminData();
+
+  return (
+    <>
+      {loading ? (
+        <div className="sync-banner">
+          <span className="spinner" />
+          Pulling latest live admin data from the backend...
+        </div>
+      ) : null}
+      <Routes>
+        <Route element={<AdminLayout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/approvals" element={<Approvals />} />
+          <Route path="/users" element={<UsersAccess />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/activity" element={<ActiveUsage />} />
+          <Route path="/conversations" element={<Conversations />} />
+          <Route path="/agents" element={<Agents />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Route>
+      </Routes>
+    </>
+  );
+}
 
 export default function App() {
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
@@ -21,20 +51,11 @@ export default function App() {
     return <LoginPage onLogin={() => setAuthenticated(true)} />;
   }
 
+  // Important: mount AdminDataProvider only after login.
+  // This guarantees the token is already in localStorage before the first live API refresh runs.
   return (
-    <Routes>
-      <Route element={<AdminLayout />}>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/approvals" element={<Approvals />} />
-        <Route path="/users" element={<UsersAccess />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/activity" element={<ActiveUsage />} />
-        <Route path="/conversations" element={<Conversations />} />
-        <Route path="/agents" element={<Agents />} />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/settings" element={<SettingsPage />} />
-      </Route>
-    </Routes>
+    <AdminDataProvider>
+      <AdminRoutes />
+    </AdminDataProvider>
   );
 }

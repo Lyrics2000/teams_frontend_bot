@@ -1,7 +1,7 @@
 import { agents, categories, conversations, dailyCategoryReports, getOverview, messages, reports, users } from '../data/mockData';
 import type { AdminOverview, AgentMetric, BotConversation, BotMessage, BotUser, DailyCategoryReport, PermissionCategory, ReportItem, TimeRange, UserActivity } from '../types/domain';
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8365/api';
+export const API_BASE_URL = 'http://web:8365/api';
 export const USE_MOCKS = import.meta.env.VITE_USE_MOCKS !== 'false';
 const TOKEN_KEY = 'britam_bot_admin_token';
 const ADMIN_KEY = 'britam_bot_admin_user';

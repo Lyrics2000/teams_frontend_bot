@@ -53,3 +53,16 @@ VITE_BOT_SECRET=dev-bot-secret
 ```
 
 Expected future APIs are documented in `src/services/api.ts` and on the Settings page.
+
+## Live mode dummy-data rule
+
+When `VITE_USE_MOCKS=false`, the frontend does not use `src/data/mockData.ts` for dashboards or reports. If the backend returns no records, the UI shows zero metrics and empty-state placeholders.
+
+Use:
+
+```env
+VITE_API_BASE_URL=/api
+VITE_USE_MOCKS=false
+```
+
+with the Vite proxy pointing `/api` to the Django backend container.

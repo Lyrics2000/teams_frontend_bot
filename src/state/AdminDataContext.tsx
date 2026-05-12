@@ -4,7 +4,7 @@ import {
   categories as initialCategories,
   conversations as initialConversations,
   dailyCategoryReports as initialDailyCategoryReports,
-  getOverview,
+  getOverview as getMockOverview,
   messages as initialMessages,
   reports as initialReports,
   users as initialUsers,
@@ -61,7 +61,7 @@ interface AdminStateShape {
 
 const AdminDataContext = createContext<AdminStateShape | null>(null);
 
-function cloneInitialState() {
+function cloneMockState() {
   return {
     users: structuredClone(initialUsers),
     categories: structuredClone(initialCategories),
@@ -73,23 +73,38 @@ function cloneInitialState() {
   };
 }
 
+function cloneEmptyState() {
+  return {
+    users: [] as BotUser[],
+    categories: [] as PermissionCategory[],
+    agents: [] as AgentMetric[],
+    conversations: [] as BotConversation[],
+    messages: [] as BotMessage[],
+    reports: [] as ReportItem[],
+    dailyCategoryReports: [] as DailyCategoryReport[],
+  };
+}
+
 function safeParseState() {
-  if (!USE_MOCKS) return cloneInitialState();
+  // Important: when live backend mode is enabled, never use dummy data.
+  // Dashboard values should come only from the Django API. Empty backend = empty UI/zero metrics.
+  if (!USE_MOCKS) return cloneEmptyState();
+
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return cloneInitialState();
+    if (!saved) return cloneMockState();
     const parsed = JSON.parse(saved);
     return {
-      users: parsed.users?.length ? parsed.users : structuredClone(initialUsers),
-      categories: parsed.categories?.length ? parsed.categories : structuredClone(initialCategories),
-      agents: parsed.agents?.length ? parsed.agents : structuredClone(initialAgents),
-      conversations: parsed.conversations?.length ? parsed.conversations : structuredClone(initialConversations),
-      messages: parsed.messages?.length ? parsed.messages : structuredClone(initialMessages),
-      reports: parsed.reports?.length ? parsed.reports : structuredClone(initialReports),
-      dailyCategoryReports: parsed.dailyCategoryReports?.length ? parsed.dailyCategoryReports : structuredClone(initialDailyCategoryReports),
+      users: parsed.users ?? structuredClone(initialUsers),
+      categories: parsed.categories ?? structuredClone(initialCategories),
+      agents: parsed.agents ?? structuredClone(initialAgents),
+      conversations: parsed.conversations ?? structuredClone(initialConversations),
+      messages: parsed.messages ?? structuredClone(initialMessages),
+      reports: parsed.reports ?? structuredClone(initialReports),
+      dailyCategoryReports: parsed.dailyCategoryReports ?? structuredClone(initialDailyCategoryReports),
     };
   } catch {
-    return cloneInitialState();
+    return cloneMockState();
   }
 }
 
@@ -113,6 +128,27 @@ function downloadCsv(filename: string, csv: string) {
   link.download = filename;
   link.click();
   URL.revokeObjectURL(url);
+}
+
+
+function buildZeroOverview(): AdminOverview {
+  return {
+    metrics: [
+      { label: 'Total Users', value: 0, change: 'no live records yet', trend: 'flat', tone: 'neutral' },
+      { label: 'Active Now', value: 0, change: 'no active users', trend: 'flat', tone: 'neutral' },
+      { label: 'Pending Approvals', value: 0, change: 'no pending approvals', trend: 'flat', tone: 'neutral' },
+      { label: 'Messages', value: 0, change: 'no messages in selected range', trend: 'flat', tone: 'neutral' },
+      { label: 'Most Asked Category', value: 'None', change: 'no category activity yet', trend: 'flat', tone: 'neutral' },
+      { label: 'Agents Healthy', value: '0/0', change: 'no agents configured', trend: 'flat', tone: 'neutral' },
+    ],
+    timeSeries: [],
+    categoryVolumes: [],
+    pendingUsers: [],
+    recentMessages: [],
+    agents: [],
+    activeUsers: [],
+    dailyCategoryReports: [],
+  };
 }
 
 export function AdminDataProvider({ children }: { children: ReactNode }) {
@@ -283,7 +319,7 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
 
   const resetDemoData = useCallback(() => {
     if (USE_MOCKS) {
-      setState(cloneInitialState());
+      setState(cloneMockState());
       return pushToast('Demo data has been reset.', 'info');
     }
     refreshAll();
@@ -291,7 +327,7 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
   }, [pushToast, refreshAll]);
 
   const overviewForRange = useCallback((range: TimeRange) => {
-    const base = USE_MOCKS || !overview ? getOverview(range) : overview;
+    const base = USE_MOCKS ? getMockOverview(range) : (overview ?? buildZeroOverview());
     const activeUsers = state.users.filter((user) => user.isAuthorized).map((user) => ({
       userId: user.id,
       userName: user.displayName,

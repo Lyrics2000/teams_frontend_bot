@@ -18,6 +18,9 @@ export function Analytics() {
   const { overviewForRange } = useAdminData();
   const overview = useMemo(() => overviewForRange(range), [overviewForRange, range]);
   const totalSearches = overview.categoryVolumes.reduce((sum, item) => sum + item.messages, 0);
+  const mostAskedCategory = overview.categoryVolumes[0];
+  const highestErrorCategory = [...overview.categoryVolumes].sort((a, b) => b.errors - a.errors)[0];
+  const fastestCategory = [...overview.categoryVolumes].sort((a, b) => a.avgResponseSeconds - b.avgResponseSeconds)[0];
   const filteredReports = overview.dailyCategoryReports.filter((report) => report.category.toLowerCase().includes(categoryFilter.toLowerCase()));
 
   return (
@@ -30,9 +33,9 @@ export function Analytics() {
 
       <div className="metric-grid">
         <MetricCard metric={{ label: 'Searches/messages', value: totalSearches.toLocaleString(), change: 'category volume total', tone: 'neutral' }} />
-        <MetricCard metric={{ label: 'Most asked category', value: overview.categoryVolumes[0].name, change: `${overview.categoryVolumes[0].messages} searches`, tone: 'good' }} />
-        <MetricCard metric={{ label: 'Highest error category', value: [...overview.categoryVolumes].sort((a, b) => b.errors - a.errors)[0].name, change: 'needs review', tone: 'warning' }} />
-        <MetricCard metric={{ label: 'Fastest category', value: [...overview.categoryVolumes].sort((a, b) => a.avgResponseSeconds - b.avgResponseSeconds)[0].name, change: 'best response time', tone: 'good' }} />
+        <MetricCard metric={{ label: 'Most asked category', value: mostAskedCategory?.name ?? 'None', change: mostAskedCategory ? `${mostAskedCategory.messages} searches` : 'no category activity', tone: mostAskedCategory ? 'good' : 'neutral' }} />
+        <MetricCard metric={{ label: 'Highest error category', value: highestErrorCategory?.name ?? 'None', change: highestErrorCategory ? 'needs review' : 'no failures recorded', tone: highestErrorCategory ? 'warning' : 'neutral' }} />
+        <MetricCard metric={{ label: 'Fastest category', value: fastestCategory?.name ?? 'None', change: fastestCategory ? 'best response time' : 'no response data', tone: fastestCategory ? 'good' : 'neutral' }} />
       </div>
 
       <div className="dashboard-grid">
@@ -84,9 +87,15 @@ export function Analytics() {
         <section className="panel">
           <div className="panel-title"><SearchCheck size={18} /> Category insights</div>
           <div className="insight-list">
-            <div><MessagesSquare size={18} /><span>ERP Issue accounts for the highest number of bot questions and should have the most reliable agent monitoring.</span></div>
-            <div><CalendarDays size={18} /><span>Daily category search reports help identify repeating issues by department and application.</span></div>
-            <div><BarChart3 size={18} /><span>API Issue currently has the highest failure count, likely due to subscription-key or token issues.</span></div>
+            {overview.categoryVolumes.length === 0 ? (
+              <div><MessagesSquare size={18} /><span>No live category data has been recorded yet. Once users start asking the bot questions, insights will appear here.</span></div>
+            ) : (
+              <>
+                <div><MessagesSquare size={18} /><span>{mostAskedCategory?.name} has the highest question volume in the selected period.</span></div>
+                <div><CalendarDays size={18} /><span>Daily category search reports help identify repeating issues by department and application.</span></div>
+                <div><BarChart3 size={18} /><span>{highestErrorCategory?.name ?? 'No category'} currently has the highest failure count.</span></div>
+              </>
+            )}
           </div>
         </section>
       </div>
@@ -96,18 +105,22 @@ export function Analytics() {
           <div className="panel-title"><CalendarDays size={18} /> Searches per category per day</div>
           <SearchBox value={categoryFilter} onChange={setCategoryFilter} placeholder="Filter by category..." />
         </div>
-        <DataTable
-          columns={['Date', 'Category', 'Searches', 'Successful', 'Failed', 'Unique users', 'Avg response']}
-          rows={filteredReports.slice(0, 60).map((report) => [
-            report.date,
-            report.category,
-            report.searches.toLocaleString(),
-            report.successful.toLocaleString(),
-            report.failed.toLocaleString(),
-            report.uniqueUsers.toLocaleString(),
-            `${report.avgResponseSeconds}s`,
-          ])}
-        />
+        {filteredReports.length === 0 ? (
+          <div className="empty-state">No daily category report data found for the selected filter.</div>
+        ) : (
+          <DataTable
+            columns={['Date', 'Category', 'Searches', 'Successful', 'Failed', 'Unique users', 'Avg response']}
+            rows={filteredReports.slice(0, 60).map((report) => [
+              report.date,
+              report.category,
+              report.searches.toLocaleString(),
+              report.successful.toLocaleString(),
+              report.failed.toLocaleString(),
+              report.uniqueUsers.toLocaleString(),
+              `${report.avgResponseSeconds}s`,
+            ])}
+          />
+        )}
       </section>
     </div>
   );

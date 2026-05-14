@@ -1,17 +1,18 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { ToastStack } from '../components/ToastStack';
-import { Activity, BarChart3, Bot, ClipboardCheck, FileText, Gauge, LayoutDashboard, LogOut, MessageSquareText, Settings, ShieldCheck, UsersRound } from 'lucide-react';
+import { Activity, BarChart3, Bot, ClipboardCheck, FileText, Gauge, LayoutDashboard, LogOut, MessageSquareText, Settings, ShieldCheck, UsersRound, TerminalSquare } from 'lucide-react';
 
 import { getStoredAdminUser, logoutAdmin, USE_MOCKS } from '../services/api';
 
 const navItems = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/approvals', label: 'Approvals', icon: ClipboardCheck },
-  { to: '/users', label: 'Users & Access', icon: UsersRound },
+  { to: '/users', label: 'Users & Access', icon: UsersRound, TerminalSquare },
   { to: '/categories', label: 'Categories', icon: ShieldCheck },
   { to: '/activity', label: 'Active Usage', icon: Activity },
   { to: '/conversations', label: 'Messages', icon: MessageSquareText },
   { to: '/agents', label: 'Agents', icon: Bot },
+  { to: '/operations', label: 'Operations', icon: TerminalSquare },
   { to: '/analytics', label: 'Analytics', icon: BarChart3 },
   { to: '/reports', label: 'Reports', icon: FileText },
   { to: '/settings', label: 'Settings', icon: Settings },

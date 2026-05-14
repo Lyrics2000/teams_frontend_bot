@@ -11,6 +11,7 @@ import { Analytics } from './pages/Analytics';
 import { Reports } from './pages/Reports';
 import { SettingsPage } from './pages/SettingsPage';
 import { ActiveUsage } from './pages/ActiveUsage';
+import { OperationsControl } from './pages/OperationsControl';
 import { LoginPage } from './pages/LoginPage';
 import { isAuthenticated } from './services/api';
 import { AdminDataProvider, useAdminData } from './state/AdminDataContext';
@@ -35,6 +36,7 @@ function AdminRoutes() {
           <Route path="/activity" element={<ActiveUsage />} />
           <Route path="/conversations" element={<Conversations />} />
           <Route path="/agents" element={<Agents />} />
+          <Route path="/operations" element={<OperationsControl />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<SettingsPage />} />

@@ -1,7 +1,7 @@
 import { agents, categories, conversations, dailyCategoryReports, getOverview, messages, reports, users } from '../data/mockData';
 import type { AdminOverview, AgentMetric, BotConversation, BotMessage, BotUser, DailyCategoryReport, PermissionCategory, ReportItem, TimeRange, UserActivity } from '../types/domain';
 
-export const API_BASE_URL = 'http://172.28.1.36:8365/api';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 export const USE_MOCKS = import.meta.env.VITE_USE_MOCKS !== 'false';
 const TOKEN_KEY = 'britam_bot_admin_token';
 const ADMIN_KEY = 'britam_bot_admin_user';
@@ -183,5 +183,120 @@ export const adminApi = {
   async getCategoryReports(range: TimeRange = '30d'): Promise<DailyCategoryReport[]> {
     if (USE_MOCKS) { await wait(); return dailyCategoryReports; }
     return request<DailyCategoryReport[]>(`/bot/admin/category-reports/?range=${range}`);
+  },
+
+  async getOperationIssues() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/operation-issues/');
+  },
+  async getOpenClawJobs() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/openclaw-jobs/');
+  },
+  async getEnvironmentRoutes() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/environment-routes/');
+  },
+  async saveEnvironmentRoute(route: Record<string, unknown>) {
+    if (USE_MOCKS) { await wait(); return route; }
+    return request('/bot/admin/environment-routes/', { method: 'POST', body: JSON.stringify(route) });
+  },
+  async getApiSystems() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/api-systems/');
+  },
+  async saveApiSystem(system: Record<string, unknown>) {
+    if (USE_MOCKS) { await wait(); return system; }
+    return request('/bot/admin/api-systems/', { method: 'POST', body: JSON.stringify(system) });
+  },
+  async getApiEndpoints() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/api-endpoints/');
+  },
+  async saveApiEndpoint(endpoint: Record<string, unknown>) {
+    if (USE_MOCKS) { await wait(); return endpoint; }
+    return request('/bot/admin/api-endpoints/', { method: 'POST', body: JSON.stringify(endpoint) });
+  },
+  async getServers() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/servers/');
+  },
+  async saveServer(server: Record<string, unknown>) {
+    if (USE_MOCKS) { await wait(); return server; }
+    return request('/bot/admin/servers/', { method: 'POST', body: JSON.stringify(server) });
+  },
+  async getDockerServices() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/docker-services/');
+  },
+  async saveDockerService(service: Record<string, unknown>) {
+    if (USE_MOCKS) { await wait(); return service; }
+    return request('/bot/admin/docker-services/', { method: 'POST', body: JSON.stringify(service) });
+  },
+  async getBackgroundProcesses() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/background-processes/');
+  },
+  async saveBackgroundProcess(process: Record<string, unknown>) {
+    if (USE_MOCKS) { await wait(); return process; }
+    return request('/bot/admin/background-processes/', { method: 'POST', body: JSON.stringify(process) });
+  },
+  async getBackgroundIssues() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/background-issues/');
+  },
+
+  async getNetworkIssues() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/network-issues/');
+  },
+  async getSecurityIssues() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/security-issues/');
+  },
+  async getAssistanceQueues() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/assistance-queues/');
+  },
+  async saveAssistanceQueue(queue: Record<string, unknown>) {
+    if (USE_MOCKS) { await wait(); return queue; }
+    return request('/bot/admin/assistance-queues/', { method: 'POST', body: JSON.stringify(queue) });
+  },
+  async getEscalations() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/escalations/');
+  },
+  async getApprovals() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/approvals/');
+  },
+  async decideApproval(id: string, decision: 'approve' | 'reject', notes = '') {
+    if (USE_MOCKS) { await wait(); return { id, decision, notes }; }
+    return request('/bot/admin/approvals/', { method: 'POST', body: JSON.stringify({ id, decision, notes }) });
+  },
+  async getEscalationMetrics() {
+    if (USE_MOCKS) { await wait(); return { totals: {}, issuesByType: [], issuesBySeverity: [], escalationsByUser: [], approvalsByUser: [] }; }
+    return request('/bot/admin/escalation-metrics/');
+  },
+
+  async getProjectUpdates() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/project-updates/');
+  },
+  async saveProjectUpdate(project: Record<string, unknown>) {
+    if (USE_MOCKS) { await wait(); return project; }
+    return request('/bot/admin/project-updates/', { method: 'POST', body: JSON.stringify(project) });
+  },
+  async getProjectActions() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/project-actions/');
+  },
+  async saveProjectAction(action: Record<string, unknown>) {
+    if (USE_MOCKS) { await wait(); return action; }
+    return request('/bot/admin/project-actions/', { method: 'POST', body: JSON.stringify(action) });
+  },
+  async getWorkReports() {
+    if (USE_MOCKS) { await wait(); return []; }
+    return request('/bot/admin/work-reports/');
   },
 };

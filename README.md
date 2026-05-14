@@ -25,7 +25,7 @@ yarn dev
 Open:
 
 ```text
-http://172.28.1.36:5173
+http://10.10.4.64:5173
 ```
 
 ## Run with Docker, no Nginx
@@ -48,7 +48,7 @@ Set:
 
 ```env
 VITE_USE_MOCKS=false
-VITE_API_BASE_URL=http://172.28.1.36:8000/api
+VITE_API_BASE_URL=http://10.10.4.64:8000/api
 VITE_BOT_SECRET=dev-bot-secret
 ```
 
